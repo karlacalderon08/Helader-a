@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ice Cream Into The Sun</title>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body{
+      background:#fff8f4;
+      color:#4b2e2e;
+    }
+
+    header{
+      background:#ffe4ea;
+      padding:30px;
+      text-align:center;
+      box-shadow:0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .logo{
+      width:220px;
+      margin-bottom:15px;
+    }
+
+    .frase{
+      font-size:18px;
+      margin-top:10px;
+      color:#6d4b4b;
+    }
+
+    nav{
+      margin-top:25px;
+    }
+
+    nav a{
+      text-decoration:none;
+      background:#7ad7df;
+      color:white;
+      padding:12px 22px;
+      margin:10px;
+      border-radius:30px;
+      transition:0.3s;
+      font-weight:bold;
+      display:inline-block;
+    }
+
+    nav a:hover{
+      background:#5dc5ce;
+      transform:scale(1.05);
+    }
+
+    .carrito-icono{
+      position:fixed;
+      top:20px;
+      right:20px;
+      background:#ff7fa1;
+      color:white;
+      padding:15px;
+      border-radius:50%;
+      cursor:pointer;
+      font-size:20px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.2);
+      z-index:1000;
+    }
+
+    section{
+      padding:60px 8%;
+    }
+
+    h2{
+      text-align:center;
+      margin-bottom:40px;
+      font-size:38px;
+      color:#5a3434;
+    }
+
+    .productos{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+      gap:35px;
+    }
+
+    .card{
+      background:white;
+      border-radius:25px;
+      padding:20px;
+      box-shadow:0 5px 15px rgba(0,0,0,0.08);
+      transition:0.3s;
+    }
+
+    .card:hover{
+      transform:translateY(-5px);
+    }
+
+    .imagen-producto{
+      width:100%;
+      height:220px;
+      border-radius:20px;
+      background:#f3f3f3;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      color:#999;
+      margin-bottom:20px;
+      overflow:hidden;
+    }
+
+    .imagen-producto img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+
+    .nombre{
+      font-size:28px;
+      margin-bottom:10px;
+    }
+
+    .precio{
+      color:#ff6f91;
+      font-size:22px;
+      margin-bottom:15px;
+      font-weight:bold;
+    }
+
+    .extras{
+      margin-top:15px;
+    }
+
+    .extras label{
+      display:block;
+      margin:8px 0;
+    }
+
+    select{
+      width:100%;
+      padding:10px;
+      border-radius:10px;
+      border:1px solid #ddd;
+      margin-top:10px;
+    }
+
+    button{
+      width:100%;
+      margin-top:20px;
+      padding:14px;
+      border:none;
+      border-radius:15px;
+      background:#ff7fa1;
+      color:white;
+      font-size:16px;
+      cursor:pointer;
+      transition:0.3s;
+      font-weight:bold;
+    }
+
+    button:hover{
+      background:#ff5f88;
+    }
+
+    .carrito{
+      position:fixed;
+      right:-400px;
+      top:0;
+      width:350px;
+      height:100%;
+      background:white;
+      box-shadow:-5px 0 15px rgba(0,0,0,0.2);
+      padding:25px;
+      transition:0.4s;
+      overflow-y:auto;
+      z-index:2000;
+    }
+
+    .carrito.active{
+      right:0;
+    }
+
+    .cerrar{
+      float:right;
+      cursor:pointer;
+      font-size:25px;
+    }
+
+    .item-carrito{
+      margin:20px 0;
+      border-bottom:1px solid #ddd;
+      padding-bottom:10px;
+    }
+
+    .total{
+      margin-top:30px;
+      font-size:24px;
+      font-weight:bold;
+    }
+
+    footer{
+      background:#ffe4ea;
+      text-align:center;
+      padding:40px;
+      margin-top:40px;
+    }
+
+    footer p{
+      margin:10px 0;
+      font-size:18px;
+    }
+
+    @media(max-width:768px){
+
+      h2{
+        font-size:30px;
+      }
+
+      .carrito{
+        width:100%;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- ICONO CARRITO -->
+  <div class="carrito-icono" onclick="abrirCarrito()">
+    🛒
+  </div>
+
+  <!-- CARRITO -->
+  <div class="carrito" id="carrito">
+    <span class="cerrar" onclick="cerrarCarrito()">✖</span>
+
+    <h2>Tu pedido</h2>
+
+    <div id="lista-carrito"></div>
+
+    <div class="total">
+      Total: $<span id="total">0</span>
+    </div>
+
+    <button>Finalizar compra</button>
+  </div>
+
+  <!-- HEADER -->
+  <header>
+
+    <!-- LOGO -->
+    <!-- SI NO APARECE, SOLO CAMBIA EL src -->
+    <img src="logo.jpeg" alt="Logo" class="logo.jpeg" width="300" height="300">
+
+    <h1>Heladería "Into The Sun"</h1>
+
+    <p class="frase">
+      Frío perfecto para el Sol
+    </p>
+
+    <nav>
+      <a href="#helados">Helados</a>
+      <a href="#paletas">Paletas Heladas</a>
+      <a href="#frappes">Frappés</a>
+    </nav>
+
+  </header>
+
+  <!-- HELADOS -->
+  <section id="helados">
+
+    <h2>Helados</h2>
+
+    <div class="productos">
+
+      <!-- CHOCOLATE -->
+      <div class="card">
+
+        <div class="imagen-producto">
+          <!-- CAMBIA chocolate.jpg -->
+          <img src="chocolate.jpg" alt="">
+        </div>
+
+        <h3 class="nombre">Chocolate</h3>
+
+        <p class="precio">$30.00</p>
+
+        <select>
+          <option>Una porción</option>
+          <option>Dos porciones</option>
+          <option>Tres porciones</option>
+        </select>
+
+        <div class="extras">
+          <label><input type="checkbox"> Chispitas</label>
+          <label><input type="checkbox"> Chocolate derretido</label>
+        </div>
+
+        <button onclick="agregarCarrito('Helado Chocolate', 0)">
+          Agregar al carrito
+        </button>
+
+      </div>
+
+      <!-- VAINILLA -->
+      <div class="card">
+
+        <div class="imagen-producto">
+          <img src="vainilla.jpg" alt="">
+        </div>
+
+        <h3 class="nombre">Vainilla</h3>
+
+        <p class="precio">$30.00</p>
+
+        <select>
+          <option>Una porción</option>
+          <option>Dos porciones</option>
+          <option>Tres porciones</option>
+        </select>
+
+        <div class="extras">
+          <label><input type="checkbox"> Chispitas</label>
+          <label><input type="checkbox"> Chocolate derretido</label>
+        </div>
+
+        <button onclick="agregarCarrito('Helado Vainilla', 0)">
+          Agregar al carrito
+        </button>
+
+      </div>
+
+      <!-- FRESA -->
+      <div class="card">
+
+        <div class="imagen-producto">
+          <img src="fresa.jpg" alt="">
+        </div>
+
+        <h3 class="nombre">Fresa</h3>
+
+        <p class="precio">$30.00</p>
+
+        <select>
+          <option>Una porción</option>
+          <option>Dos prciones</option>
+          <option>Tres porciones</option>
+        </select>
+
+        <div class="extras">
+          <label><input type="checkbox"> Chispitas</label>
+          <label><input type="checkbox"> Chocolate derretido</label>
+        </div>
+
+        <button onclick="agregarCarrito('Helado Fresa', 0)">
+          Agregar al carrito
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- PALETAS -->
+  <section id="paletas">
+
+    <h2>Paletas Heladas</h2>
+
+    <div class="productos">
+
+      <div class="card">
+
+        <div class="imagen-producto">
+          <img src="limon.jpg" alt="">
+        </div>
+
+        <h3 class="nombre">Limón</h3>
+
+        <p class="precio">$15.00</p>
+
+        <button onclick="agregarCarrito('Paleta Limón', 0)">
+          Agregar al carrito
+        </button>
+
+      </div>
+
+      <div class="card">
+
+        <div class="imagen-producto">
+          <img src="uva.jpg" alt="">
+        </div>
+
+        <h3 class="nombre">Uva</h3>
+
+        <p class="precio">$15.00</p>
+
+        <button onclick="agregarCarrito('Paleta Uva', 0)">
+          Agregar al carrito
+        </button>
+
+      </div>
+
+      <div class="card">
+
+        <div class="imagen-producto">
+          <img src="chamoy.jpg" alt="">
+        </div>
+
+        <h3 class="nombre">Chamoy</h3>
+
+        <p class="precio">$15.00</p>
+
+        <button onclick="agregarCarrito('Paleta Chamoy', 0)">
+          Agregar al carrito
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- FRAPPES -->
+  <section id="frappes">
+
+    <h2>Frappés</h2>
+
+    <div class="productos">
+
+      <div class="card">
+
+        <div class="imagen-producto">
+          <img src="cappuccino.jpg" alt="">
+        </div>
+
+        <h3 class="nombre">Capuchino</h3>
+
+        <p class="precio">$60.00</p>
+
+        <button onclick="agregarCarrito('Frappé Capuchino', 0)">
+          Agregar al carrito
+        </button>
+
+      </div>
+
+      <div class="card">
+
+        <div class="imagen-producto">
+          <img src="ferrero.jpg" alt="">
+        </div>
+
+        <h3 class="nombre">Ferrero</h3>
+
+        <p class="precio">$85.00</p>
+
+        <button onclick="agregarCarrito('Frappé Ferrero', 0)">
+          Agregar al carrito
+        </button>
+
+      </div>
+
+      <div class="card">
+
+        <div class="imagen-producto">
+          <img src="oreo.jpg" alt="">
+        </div>
+
+        <h3 class="nombre">Oreo</h3>
+
+        <p class="precio">$80.00</p>
+
+        <button onclick="agregarCarrito('Frappé Oreo', 0)">
+          Agregar al carrito
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+
+    <p>📍 Ubicación: Domicilio conocido</p>
+
+    <p>🕒 Horario: De lunes a viernes (2:00 P.M - 7:30 P.M) De sabado a domingo (12:00 P.M - 8:00 P.M)</p>
+
+    <p>🍦 Gracias por visitar Heladería "Into The Sun"</p>
+
+  </footer>
+
+  <script>
+
+    let total = 0;
+
+    function abrirCarrito(){
+      document.getElementById("carrito").classList.add("active");
+    }
+
+    function cerrarCarrito(){
+      document.getElementById("carrito").classList.remove("active");
+    }
+
+    function agregarCarrito(nombre, precio){
+
+      const lista = document.getElementById("lista-carrito");
+
+      const item = document.createElement("div");
+
+      item.classList.add("item-carrito");
+
+      item.innerHTML = `
+        <p>${nombre}</p>
+        <p>$${precio}</p>
+      `;
+
+      lista.appendChild(item);
+
+      total += precio;
+
+      document.getElementById("total").textContent = total;
+
+    }
+
+  </script>
+
+</body>
+</html>
